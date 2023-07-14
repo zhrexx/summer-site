@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mitarbeiterdaten</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      padding: 20px;
+    }
+    
+    h1 {
+      color: #333333;
+      text-align: center;
+    }
+    
+    form {
+      max-width: 400px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      border-radius: 3px;
+      border: 1px solid #cccccc;
+      margin-bottom: 10px;
+    }
+    
+    input[type="submit"] {
+      width: 100%;
+      padding: 10px;
+      background-color: #333333;
+      color: #ffffff;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    
+    input[type="submit"]:hover {
+      background-color: #555555;
+    }
+  </style>
+</head>
+<body>
+  <h1>Mitarbeiterdaten</h1>
+
+  <form id="mitarbeiterForm">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required>
+
+    <label for="arbeitszeit">Arbeitszeit:</label>
+    <input type="text" id="arbeitszeit" name="arbeitszeit" required>
+
+    <label for="pausen">Pausen:</label>
+    <input type="text" id="pausen" name="pausen" required>
+
+    <label for="job">Job:</label>
+    <input type="text" id="job" name="job" required>
+
+    <label for="von">Von:</label>
+    <input type="time" id="von" name="von" required>
+
+    <label for="bis">Bis:</label>
+    <input type="time" id="bis" name="bis" required>
+
+    <input type="submit" value="Eintragen">
+  </form>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      var apiUrl = 'https://api.github.com/repos/zharexx/zharexx.github.io/contents/mitarbeiterdaten.json';
+      var token = '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';
+
+      $('#mitarbeiterForm').submit(function(e) {
+        e.preventDefault();
+
+        var name = $('#name').val();
+        var arbeitszeit = $('#arbeitszeit').val();
+        var pausen = $('#pausen').val();
+        var job = $('#job').val();
+        var von = $('#von').val();
+        var bis = $('#bis').val();
+
+        var data = {
+          name: name,
+          arbeitszeit: arbeitszeit,
+          pausen: pausen,
+          job: job,
+          von: von,
+          bis: bis
+        };
+
+        speichernAufGitHub(data);
+      });
+
+      function speichernAufGitHub(data) {
+        data = JSON.stringify(data);
+        var content = btoa(data);
+
+        $.ajax({
+          url: apiUrl,
+          headers: {
+            Authorization: 'token ' + token
+          },
+          method: 'PUT',
+          contentType: 'application/json',
+          data: JSON.stringify({
+            message: 'Daten aktualisiert',
+            content: content
+          }),
+          success: function(response) {
+            alert("Die Daten wurden erfolgreich eingetragen.");
+          },
+          error: function(error) {
+            console.log(error);
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
